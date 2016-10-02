@@ -39,9 +39,11 @@ class KrajController extends Controller
 			return $kraj; 		
     	}
 
+    	$krajBaza = \App\factbook_countries::find(3);
+
       	$kraj = array(
    			$nazwa_kraju => array(
-   				"wstep" =>"Pieknie rozwijajacy sie kraj.",
+   				"wstep" =>$krajBaza->name,
    				"geografia" => "Bez dostepu do morza, kraj polozony pomiedzy dwoma wrogimi krajami",
    				"gdp" => 123456)
 
