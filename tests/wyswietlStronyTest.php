@@ -23,4 +23,78 @@ class wyswietlStronyTest extends TestCase
              ->see("Trzeciej Ery");
    
     }
+    /**
+    *Sprawdz czy pobiera i wyswietla dane z Bazy
+    * @test
+    */
+    public function testWyswietlKrajzBazy()
+    {
+        $this->visit('kraj/Germany')
+             ->see("Berlin");
+
+        $this->visit('kraj/France')
+             ->see("Paris");
+
+        $this->visit('kraj/United Kingdom')
+             ->see("London");
+ 
+    }
+
+    /**
+    *Sprawdz czy poprawnie wyswietla informacje o nieistnniejacym kraju
+    * @test
+    */
+    public function testKrajNieIstnieje()
+    {
+        $this->visit('kraj/Nieistnieje')
+             ->see("Nie znaleziono kraju");       
+    }
+
+
+    /**
+    *Sprawdz czy zamienia male litery
+    * @test
+    */
+    public function testWyswietlKrajMaleLitery()
+    {
+        $this->visit('kraj/germany')
+             ->see("Berlin");
+
+        $this->visit('kraj/france')
+             ->see("Paris");
+
+        $this->visit('kraj/united kingdom')
+             ->see("London");
+ 
+    }
+
+    /**
+    *Sprawdz czy zamienia podkreslniki na spacje
+    * @test
+    */
+    public function test_WyswietlKraj_PodkreslnikiNaSpacje()
+    {
+
+        $this->visit('kraj/United_Kingdom')
+             ->see("London");
+
+         $this->visit('kraj/United_States')
+             ->see("Washington, DC");            
+ 
+    }
+
+    /**
+    *Sprawdz czy zamienia podkreslniki na spacje
+    * i jednoczesnie male litery na duze
+    * @test
+    */
+    public function testWyswietl_Podkreslniki_Litery()
+    {
+        $this->visit('kraj/united_kingdom')
+             ->see("London");
+
+        $this->visit('kraj/united_states')
+             ->see("Washington, DC");
+
+    }
 }

@@ -44,9 +44,23 @@ class KrajController extends Controller
 			return $kraj; 		
     	}
 
+        //zamien podkreslniki na spacje
+        $nazwa_kraju = ucwords( str_replace('_', ' ', $nazwa_kraju) );
+        //zamien pierwsze male litery na wieksze
+        // $nazwa_kraju = ucwords( $nazwa_kraju );
+
+
+
     	//odczytaj dane na temat danego kraju
     	$countryid = $this->znajdzIdKraju( $nazwa_kraju );
+        if( is_null($countryid)) {
+            return array();
+        }
     	$daneKrajuJSON = $this->daneKrajuJSON( $countryid );
+
+
+
+
 
     	//utworz zmienna zawierajaca dane ktora zostanie zwrocona
     	$daneKraju = array();
@@ -75,10 +89,13 @@ class KrajController extends Controller
     /**
     * Znajdz id danego kraju podajac jego nazwe
     * @param - string - nazwa kraju - 
-	* @return - number - countryid - Id Kraju
+	* @return - number - countryid - Id Kraju lub NULL jesli nie ma danego kraju w bazie
     */
     private function znajdzIdKraju($nazwa_kraju) {
     	$krajBaza = \App\factbook_countries::where('name', $nazwa_kraju)->get();
+        if( empty($krajBaza[0]) ) {
+            return NULL;
+        }
     	$countryid = $krajBaza[0]->id;
     	return $countryid;
     }
@@ -90,6 +107,9 @@ class KrajController extends Controller
     * @return - JSON zawierajacy dane z bazy
     */
     private function daneKrajuJSON($countryid) {
+        if( $countryid == NULL ){
+            return NULL;
+        }
     	$daneKraju = \App\factbook_values::where('countryid', $countryid)->get();
     	return $daneKraju;
     }
