@@ -13,16 +13,19 @@ class wyswietlStronyTest extends TestCase
     * @test
     *funkcja sprawdza czy Laravel wyswietla strone testowa - nie istniejacy kran angbar
     */
-    // public function testWyswietlStrone()
-    // {
-    //     $this->visit('kraj/angbar')
-    //          ->see("angbar")
-    //          ->see('waluta')
-    //          ->see('gdp')
-    //          ->see(75767687876)
-    //          ->see("Trzeciej Ery");
+    public function testWyswietlStrone()
+    {
+        $this->visit('kraj/angbar')
+             ->see("angbar")
+             ->see('waluta')
+             ->see('gdp')
+             ->see(75767687876)
+             ->see("Trzeciej Ery");
    
-    // }
+    }
+
+
+    
     /**
     *Sprawdz czy pobiera i wyswietla dane z Bazy
     * @test
@@ -40,6 +43,25 @@ class wyswietlStronyTest extends TestCase
  
     }
 
+
+    /**
+    *Sprawdz czy pobiera i wyswietla dane z Bazy, w formacie JSON
+    * @test
+    */
+    public function testWyswietlKrajzBazyJSON()
+    {
+        $this->visit('kraj/Germany/json_true')
+             ->see("Berlin");
+
+        $this->visit('kraj/France/json_true')
+             ->see("Paris");
+
+        $this->visit('kraj/United Kingdom/json_true')
+             ->see("London");
+ 
+    }
+
+
     /**
     *Sprawdz czy poprawnie wyswietla informacje o nieistnniejacym kraju
     * @test
@@ -48,6 +70,16 @@ class wyswietlStronyTest extends TestCase
     {
         $this->visit('kraj/Nieistnieje')
              ->see("Nie znaleziono kraju");       
+    }
+
+
+    /**
+    *Sprawdz czy wyswietla informacje ze kraj nie istnieje - format JSON
+    */
+    public function testKrajNieIstniejeJSON()
+    {
+        $this->visit('kraj/Nieistnieje/json_true')
+             ->see("error");       
     }
 
 

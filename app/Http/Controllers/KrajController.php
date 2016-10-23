@@ -15,41 +15,49 @@ class KrajController extends Controller
 	* @return - widok - Kraj - wyswietla wszystkie dane na temat danego Kraju
     */
     public function wyswietlKraj($nazwa_kraju, $json = null) {
-    	// echo "Nazwa Kraju ".$nazwa_kraju ;
+
+        #sluzy do testowania wyswietlania kraju
+        if ($nazwa_kraju == "angbar") {
+          $kraj = array(
+                    $nazwa_kraju => array(
+                        "Informacje wstępne" =>"Angmar został założony około 1300 roku Trzeciej Ery, na północnym krańcu Gór Mglistych, 
+                        przez Wodza Nazgûli, przywódcę Upiorów Pierścienia, którego odtąd nazywano Czarnoksiężnikiem z Angmaru, bowiem ukrywał swoją prawdziwą tożsamość. 
+                        Większość jego poddanych stanowili ludzie z gór i orkowie. Państwo to sięgało swoim obszarem w okolice Ettenmoors. Jego głównym ośrodkiem i stolicą było Carn Dûm. 
+                        Ponieważ Czarnoksiężnik był sługą Saurona, uważa się, że wojny z państwami Dúnedainów, powstałymi w wyniku podziału królestwa Arnoru na Arthedain, Cardolan i Rhudaur, prowadzone były przez Angmar z rozkazu Władcy Ciemności. 
+                        Skłócenia tamtejszych władców było dla Czarnoksiężnika bardzo korzystne..",
+                        "geografia" => "Górzysty kraj, bez dostepu do morza,położony pomiedzy Arthedainem a Rhohanem",
+                        "gdp" => 75767687876,
+                        "waluta" => "zlote Saurony"
+                    )                
+                );  
+            return view('Kraj')->with('kraj', $kraj );
+        }
 
 
+        //zamien nazwe kraju z url na mozliwa do wyszukanie w bazie danych
         $nazwa_kraju = $this->obrobkaNazwyKraju( $nazwa_kraju);
+
+        $id_Kraju = $this->znajdzIdKraju( $nazwa_kraju );
+
+        //sprawdz czy kraj o podanej nazwie istnieje
+        if( $this->czyKrajIstnieje( $nazwa_kraju ) == false ){
+            if ($json == "json_true") {
+                return response()->json(['error' => 'kraj nie istnieje']);
+            }
+            else {
+                return view('Kraj')->with('kraj', array() );
+            }
+
+        }
 
 
         if ($json == "json_true") { //zwroc dane w formie JSON
-            return $this->zwrocDaneKrajuJSON( $nazwa_kraju );
+            return $this->zwrocDaneKrajuJSON( $id_Kraju );
         }
         else {  //wyswietl dane w formie strony HTML
-            $kraj = $this->zwrocDaneKrajuHTML( $nazwa_kraju );
+            $kraj = $this->zwrocDaneKrajuHTML( $id_Kraju );
             return view('Kraj')->with('kraj', $kraj);
         }
-    }
-
-
-    private function czyKrajIstnieje( $nazwa_kraju ) {
-        //odczytaj dane na temat danego kraju
-        $countryid = $this->znajdzIdKraju( $nazwa_kraju );
-        if( is_null( $countryid )) {
-            return false;
-        }
-
-        return true;
-    }
-
-
-    private function obrobkaNazwyKraju( $nazwa_kraju){
-        //zamien podkreslniki na spacje
-        $nazwa_kraju = ucwords( str_replace('_', ' ', $nazwa_kraju) );
-        //zamien pierwsze male litery na wieksze
-        // $nazwa_kraju = ucwords( $nazwa_kraju );
-
-        return $nazwa_kraju;
-
     }
 
 
@@ -59,17 +67,9 @@ class KrajController extends Controller
     * @return - JSON zawierajacy dane kraju
     *
     */
-    private function zwrocDaneKrajuJSON( $nazwa_kraju ) {
+    private function zwrocDaneKrajuJSON( $id_Kraju ) {
 
-
-    	//odczytaj dane na temat danego kraju
-        if($this->czyKrajIstnieje( $nazwa_kraju) == false) {
-            return response()->json(['error' => 'kraj nie istnieje']);
-        }
-
-        $countryid = $this->znajdzIdKraju( $nazwa_kraju );
-    	$daneKrajuJSON = $this->daneKrajuJSON( $countryid );
-
+    	$daneKrajuJSON = $this->daneKrajuJSON( $id_Kraju );
         return $daneKrajuJSON;
 
 
@@ -82,31 +82,10 @@ class KrajController extends Controller
     * @return - array($nazwa_kraju => $daneKraju), gdzie $daneKraju to tez array 
     *
     */
-    private function zwrocDaneKrajuHTML( $nazwa_kraju ) {
+    private function zwrocDaneKrajuHTML( $id_Kraju ) {
 
 
-        sluzy do testowania wyswietlania kraju
-        if ($nazwa_kraju == "angbar") {
-          $kraj = array(
-                    $nazwa_kraju => array(
-                        "Informacje wstępne" =>"Angmar został założony około 1300 roku Trzeciej Ery, na północnym krańcu Gór Mglistych, 
-                        przez Wodza Nazgûli, przywódcę Upiorów Pierścienia, którego odtąd nazywano Czarnoksiężnikiem z Angmaru, bowiem ukrywał swoją prawdziwą tożsamość. 
-                        Większość jego poddanych stanowili ludzie z gór i orkowie. Państwo to sięgało swoim obszarem w okolice Ettenmoors. Jego głównym ośrodkiem i stolicą było Carn Dûm. 
-                        Ponieważ Czarnoksiężnik był sługą Saurona, uważa się, że wojny z państwami Dúnedainów, powstałymi w wyniku podziału królestwa Arnoru na Arthedain, Cardolan i Rhudaur, prowadzone były przez Angmar z rozkazu Władcy Ciemności. 
-                        Skłócenia tamtejszych władców było dla Czarnoksiężnika bardzo korzystne..",
-                        "geografia" => "Górzysty kraj, bez dostepu do morza,położony pomiedzy Arthedainem a Rhohanem",
-                        "gdp" => 75767687876,
-                        "waluta" => "zlote Saurony")
-                );  
-            return $kraj;       
-        }
-
-        if($this->czyKrajIstnieje( $nazwa_kraju ) == false) {
-            return array();
-        }
-
-
-        $daneKrajuJSON = $this->zwrocDaneKrajuJSON($nazwa_kraju);
+        $daneKrajuJSON = $this->zwrocDaneKrajuJSON( $id_Kraju );
 
     	//utworz zmienna zawierajaca dane ktora zostanie zwrocona
     	$daneKraju = array();
@@ -126,7 +105,7 @@ class KrajController extends Controller
 
     	//utworz zwracana zmienna
       	$kraj = array(
-   			$nazwa_kraju => $daneKraju
+   			$id_Kraju => $daneKraju
 		);
 		
 		return $kraj; 	
@@ -170,5 +149,37 @@ class KrajController extends Controller
     	$nazwaPola = \App\factbook_fields::where('id', $fieldid)->get();
     	return $nazwaPola[0]->name;
     }
+
+
+    /**
+    *Sprawdz czy istniej kraj o podanej nazwie
+    * @param - string nazwa kraju
+    * @return - boolean - true jesli kraj o podanej nazwie istnieje, false jesli nie istnieje
+    */
+    private function czyKrajIstnieje( $nazwa_kraju ) {
+        //odczytaj dane na temat danego kraju
+        $countryid = $this->znajdzIdKraju( $nazwa_kraju );
+        if( is_null( $countryid )) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+    * Zamien nazwe kraju na mozliwa do odczytania z bazy danych
+    * @param - string - nazwa kraju
+    * @return - string - nazwa kraju przystosowana do standartu w bazie danych
+    */
+    private function obrobkaNazwyKraju( $nazwa_kraju){
+        //zamien podkreslniki na spacje
+        $nazwa_kraju = ucwords( str_replace('_', ' ', $nazwa_kraju) );
+        //zamien pierwsze male litery na wieksze
+        // $nazwa_kraju = ucwords( $nazwa_kraju );
+
+        return $nazwa_kraju;
+
+    }
+
 
 }
