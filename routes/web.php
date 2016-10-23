@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('kraj/{nazwa_kraju}', "KrajController@wyswietlKraj");
+Route::get('kraj/{nazwa_kraju}/{json?}', "KrajController@wyswietlKraj");
 
 
 

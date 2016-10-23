@@ -9,16 +9,72 @@ use App\Http\Requests;
 class KrajController extends Controller
 {
 
-	//funkcja wyswietla opis kraju
-	// @param - string nazwa kraju
-	// @return - widok - Kraj - wyswietla wszystkie dane na temat danego Kraju
-    public function wyswietlKraj($nazwa_kraju) {
+	/** 
+    *funkcja wyswietla opis kraju
+	* @param - string nazwa kraju
+	* @return - widok - Kraj - wyswietla wszystkie dane na temat danego Kraju
+    */
+    public function wyswietlKraj($nazwa_kraju, $json = null) {
     	// echo "Nazwa Kraju ".$nazwa_kraju ;
 
-    	$kraj = $this->zwrocDaneKraju($nazwa_kraju);
 
-    	return view('Kraj')->with('kraj', $kraj);
+        $nazwa_kraju = $this->obrobkaNazwyKraju( $nazwa_kraju);
+
+
+        if ($json == "json_true") { //zwroc dane w formie JSON
+            return $this->zwrocDaneKrajuJSON( $nazwa_kraju );
+        }
+        else {  //wyswietl dane w formie strony HTML
+            $kraj = $this->zwrocDaneKrajuHTML( $nazwa_kraju );
+            return view('Kraj')->with('kraj', $kraj);
+        }
     }
+
+
+    private function czyKrajIstnieje( $nazwa_kraju ) {
+        //odczytaj dane na temat danego kraju
+        $countryid = $this->znajdzIdKraju( $nazwa_kraju );
+        if( is_null( $countryid )) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private function obrobkaNazwyKraju( $nazwa_kraju){
+        //zamien podkreslniki na spacje
+        $nazwa_kraju = ucwords( str_replace('_', ' ', $nazwa_kraju) );
+        //zamien pierwsze male litery na wieksze
+        // $nazwa_kraju = ucwords( $nazwa_kraju );
+
+        return $nazwa_kraju;
+
+    }
+
+
+    /** 
+    *funkcja zwraca Dane Kraju
+    * @param string - nazwa kraju
+    * @return - JSON zawierajacy dane kraju
+    *
+    */
+    private function zwrocDaneKrajuJSON( $nazwa_kraju ) {
+
+
+    	//odczytaj dane na temat danego kraju
+        if($this->czyKrajIstnieje( $nazwa_kraju) == false) {
+            return response()->json(['error' => 'kraj nie istnieje']);
+        }
+
+        $countryid = $this->znajdzIdKraju( $nazwa_kraju );
+    	$daneKrajuJSON = $this->daneKrajuJSON( $countryid );
+
+        return $daneKrajuJSON;
+
+
+    }
+
 
     /** 
     *funkcja zwraca Dane Kraju
@@ -26,41 +82,31 @@ class KrajController extends Controller
     * @return - array($nazwa_kraju => $daneKraju), gdzie $daneKraju to tez array 
     *
     */
-    private function zwrocDaneKraju($nazwa_kraju) {
-
-    	//sluzy do testowania wyswietlania kraju
-    	if ($nazwa_kraju == "angbar") {
-		  $kraj = array(
-		   			$nazwa_kraju => array(
-		   				"Informacje wstępne" =>"Angmar został założony około 1300 roku Trzeciej Ery, na północnym krańcu Gór Mglistych, 
-		   				przez Wodza Nazgûli, przywódcę Upiorów Pierścienia, którego odtąd nazywano Czarnoksiężnikiem z Angmaru, bowiem ukrywał swoją prawdziwą tożsamość. 
-		   				Większość jego poddanych stanowili ludzie z gór i orkowie. Państwo to sięgało swoim obszarem w okolice Ettenmoors. Jego głównym ośrodkiem i stolicą było Carn Dûm. 
-		   				Ponieważ Czarnoksiężnik był sługą Saurona, uważa się, że wojny z państwami Dúnedainów, powstałymi w wyniku podziału królestwa Arnoru na Arthedain, Cardolan i Rhudaur, prowadzone były przez Angmar z rozkazu Władcy Ciemności. 
-		   				Skłócenia tamtejszych władców było dla Czarnoksiężnika bardzo korzystne..",
-		   				"geografia" => "Górzysty kraj, bez dostepu do morza,położony pomiedzy Arthedainem a Rhohanem",
-		   				"gdp" => 75767687876,
-		   				"waluta" => "zlote Saurony")
-				);  
-			return $kraj; 		
-    	}
-
-        //zamien podkreslniki na spacje
-        $nazwa_kraju = ucwords( str_replace('_', ' ', $nazwa_kraju) );
-        //zamien pierwsze male litery na wieksze
-        // $nazwa_kraju = ucwords( $nazwa_kraju );
+    private function zwrocDaneKrajuHTML( $nazwa_kraju ) {
 
 
+        sluzy do testowania wyswietlania kraju
+        if ($nazwa_kraju == "angbar") {
+          $kraj = array(
+                    $nazwa_kraju => array(
+                        "Informacje wstępne" =>"Angmar został założony około 1300 roku Trzeciej Ery, na północnym krańcu Gór Mglistych, 
+                        przez Wodza Nazgûli, przywódcę Upiorów Pierścienia, którego odtąd nazywano Czarnoksiężnikiem z Angmaru, bowiem ukrywał swoją prawdziwą tożsamość. 
+                        Większość jego poddanych stanowili ludzie z gór i orkowie. Państwo to sięgało swoim obszarem w okolice Ettenmoors. Jego głównym ośrodkiem i stolicą było Carn Dûm. 
+                        Ponieważ Czarnoksiężnik był sługą Saurona, uważa się, że wojny z państwami Dúnedainów, powstałymi w wyniku podziału królestwa Arnoru na Arthedain, Cardolan i Rhudaur, prowadzone były przez Angmar z rozkazu Władcy Ciemności. 
+                        Skłócenia tamtejszych władców było dla Czarnoksiężnika bardzo korzystne..",
+                        "geografia" => "Górzysty kraj, bez dostepu do morza,położony pomiedzy Arthedainem a Rhohanem",
+                        "gdp" => 75767687876,
+                        "waluta" => "zlote Saurony")
+                );  
+            return $kraj;       
+        }
 
-    	//odczytaj dane na temat danego kraju
-    	$countryid = $this->znajdzIdKraju( $nazwa_kraju );
-        if( is_null($countryid)) {
+        if($this->czyKrajIstnieje( $nazwa_kraju ) == false) {
             return array();
         }
-    	$daneKrajuJSON = $this->daneKrajuJSON( $countryid );
 
 
-
-
+        $daneKrajuJSON = $this->zwrocDaneKrajuJSON($nazwa_kraju);
 
     	//utworz zmienna zawierajaca dane ktora zostanie zwrocona
     	$daneKraju = array();
