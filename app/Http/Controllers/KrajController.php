@@ -14,7 +14,7 @@ class KrajController extends CzytajDane
 	* @param - string nazwa kraju
 	* @return - widok - Kraj - wyswietla wszystkie dane na temat danego Kraju
     */
-    public function wyswietlKraj($nazwa_kraju, $json = null) {
+    public function wyswietlKraj($nazwa_kraju, $json_true = null) {
 
         #sluzy do testowania wyswietlania kraju
         if ($nazwa_kraju == "angbar") {
@@ -41,7 +41,7 @@ class KrajController extends CzytajDane
 
         //sprawdz czy kraj o podanej nazwie istnieje
         if( $this->czyKrajIstnieje( $nazwa_kraju ) == false ){
-            if ($json == "json_true") {
+            if ($json_true == "json_true") {
                 return response()->json(['error' => 'kraj nie istnieje']);
             }
             else {
@@ -51,7 +51,7 @@ class KrajController extends CzytajDane
         }
 
 
-        if ($json == "json_true") { //zwroc dane w formie JSON
+        if ($json_true == "json_true") { //zwroc dane w formie JSON
             return $this->zwrocDaneKrajuJSON( $id_Kraju );
         }
         else {  //wyswietl dane w formie strony HTML
@@ -110,7 +110,6 @@ class KrajController extends CzytajDane
 		
 		return $kraj; 	
     }
-
 
 
 
