@@ -66,4 +66,27 @@ class CzytajDane extends Controller
     }
 
 
+    /**
+    *funkcja zwraca nazwe pola (pole zawiera pojedyncze dane na temat kraju np.: GDP, nazwa kraju ) 
+    * @param int fieldid - id pola
+    * @return - string, nazwa pola
+    */
+    protected function zwrocIdPola($fieldid) {
+        $nazwaPola = \App\factbook_fields::where('id', $fieldid)->get();
+        return $nazwaPola[0]->name;
+    }
+
+    /**
+    * funcja zwraca nazwe kraju gdy podamy jego skrot
+    * @param - string - skrot kraju
+    * @return - string nazwa kraju
+    */
+    protected function zwrocKrajuPoSkrocie($skrotKraju) {
+        $kraj = \App\factbook_countries::where('xmlid', $skrotKraju)->get();
+        if( empty($kraj[0]) ) {
+            return NULL;
+        };
+        return $kraj[0];
+    }
+
 }

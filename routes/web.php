@@ -18,7 +18,11 @@ Route::get('/', function () {
 
 Route::get('kraj/{nazwa_kraju}/{json?}', "KrajController@wyswietlKraj");
 
-Route::get('dane/{nazwa_kraju?}/{idRekordu?}/{json?}', "CzytajRekordController@czytajRekord");
+Route::get('dane/{nazwa_kraju}/{idRekordu}/{json?}', "CzytajRekordController@czytajRekord");
+
+Route::get('rankingi/{json?}', "RankingiController@wyswietlRankingi");
+
+Route::get('ranking/{atrybut}/{json?}', "RankingiController@wyswietlRanking");
 
 // Route::get('kraj/{nazwa_kraju}', function($nazwa_kraju) {
 // 	echo $nazwa_kraju;
