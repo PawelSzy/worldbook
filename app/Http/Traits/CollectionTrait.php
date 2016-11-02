@@ -1,11 +1,12 @@
 
-<?
-// Trait
-trait ControllerTrait {
+<?php
+
+
+trait CollectionTrait {
  
     /**
     * Polacz dwie kollekcje (collection) 
-    *np.: kol1 = collect( (array("Polska", "Europa"), array("Niemcy", "Europa"); kol2 = collect(array("36 milionow", "dostep do morza"), array("84 miliony", "dostep do morza")
+    * np.: kol1 = collect( (array("Polska", "Europa"), array("Niemcy", "Europa"); kol2 = collect(array("36 milionow", "dostep do morza"), array("84 miliony", "dostep do morza")
     * miks = zmiksujCollection(kol1, kol2)
     * miks->toArray(); zwroci [("Polska, Europa", "36 milionow", "dostep, do morza"), ("Niemcy", "Europa", "84 miliony", "dostep do morza")]
     * @param - collection, collection, string or number
@@ -40,3 +41,4 @@ trait ControllerTrait {
     }
  
 }
+
