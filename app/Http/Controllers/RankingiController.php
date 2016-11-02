@@ -76,16 +76,21 @@ class RankingiController extends CzytajRekordController
 
 
 
-    	return response()->json( $daneKrajow );
+        if ($json_true == "json_true") {
+            return response()->json( $daneKrajow );            
+        }
+        else {
+            return view('pojedynczy_ranking')->with('ranking', $daneKrajow );
+        }
+
+
+
 
     }
 
 
     public function wyswietlRankingHTML(Request $request)
     {
-            // $id = Inpu::get('id') ; 
-
-
             $idRankingu =  $request->input('rankingi');
             return $this->wyswietlRanking($idRankingu); 
     }
