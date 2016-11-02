@@ -82,7 +82,7 @@ class CzytajDane extends Controller
     * @return - string nazwa kraju
     */
     protected function zwrocKrajuPoSkrocie($skrotKraju) {
-        $kraj = \App\factbook_countries::where('xmlid', $skrotKraju)->get();
+        $kraj = \App\factbook_countries::where('xmlid', $skrotKraju)->pluck();
         if( empty($kraj[0]) ) {
             return NULL;
         };

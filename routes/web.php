@@ -20,10 +20,14 @@ Route::get('kraj/{nazwa_kraju}/{json?}', "KrajController@wyswietlKraj");
 
 Route::get('dane/{nazwa_kraju}/{idRekordu}/{json?}', "CzytajRekordController@czytajRekord");
 
-Route::get('rankingi/{json?}', "RankingiController@wyswietlRankingi");
+Route::get('rankingi/{json?}', [
+	'as' => "rankingi",	
+	'uses' => "RankingiController@wyswietlRankingi"
+	]);
 
-Route::get('ranking/{idRankingu}/{liczba_krajow?}/{json?}', "RankingiController@wyswietlRanking");
+Route::get('ranking/{idRankingu}/{liczba_krajow?}/{json?}',	"RankingiController@wyswietlRanking" );
 
-// Route::get('kraj/{nazwa_kraju}', function($nazwa_kraju) {
-// 	echo $nazwa_kraju;
-// });
+Route::post('ranking',[ 
+	'as'  => 'ranking',
+	'uses' => "RankingiController@wyswietlRankingHTML"
+	]);

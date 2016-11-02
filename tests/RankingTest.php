@@ -10,7 +10,7 @@ class RankingTest extends TestCase
     * Wyswietl Rankingi - po jakich elementach mozemy porownac kraje
     * @test
     */
-    public function testWyswietlRankingi()
+    public function testWyswietlRankingiJSON()
     {
         $this->visit('/rankingi/json_true')
              ->see("area")->see("Population")->see("Airports");
@@ -21,7 +21,7 @@ class RankingTest extends TestCase
     * Sprawdz rankingi - czy wyswietla sie odpowiedni ranking
     * @test
     */
-    public function testWyswietlRanking()
+    public function testWyswietlRankingJSON()
     {
         $this->visit('/ranking/7/10/json_true')
              ->see("area")->see("Russia");
@@ -33,5 +33,26 @@ class RankingTest extends TestCase
              ->see("GDP")->see("States");
     }
 
+    public function testWyswietlRankingiHTML()
+    {
+        $this->visit('/rankingi')
+             ->see("area")->see("Population")->see("Airports");
+ 
+    }
 
+    /**
+    * Sprawdz rankingi - czy wyswietla sie odpowiedni ranking
+    * @test
+    */
+    public function testWyswietlRankingHTML()
+    {
+        $this->visit('/ranking/7')
+             ->see("area")->see("Russia");
+ 
+        $this->visit('/ranking/29')
+             ->see("Population")->see("China");
+
+        $this->visit('/ranking/91')
+             ->see("GDP")->see("States");
+    }
 }

@@ -31,7 +31,13 @@ class RankingiController extends CzytajRekordController
 	        	$rankingi[$idPola] = $this->zwrocNazwePola( $idPola );
 	        }
 
-	        return response()->json( $rankingi );
+
+            if ($json_true == "json_true") {
+                return response()->json( $rankingi );
+            } 
+            else {
+                return view('rankingi')->with('dane_rankingu', $rankingi );
+            };
     }
 
     /**
@@ -41,6 +47,8 @@ class RankingiController extends CzytajRekordController
     */
     public function wyswietlRanking($idRankingu, $liczba_krajow = 10, $json_true = "json_false") {
     	//pobierz ranking - ranking podany jest w skroteach
+
+
         $ranking = $this->czytajRanking( $idRankingu, $liczba_krajow);
 
     	$nazwaRankingu = $this->zwrocNazwePola( $idRankingu );
@@ -65,8 +73,21 @@ class RankingiController extends CzytajRekordController
         //zwroc dane
         $daneKrajow = $daneKrajow->pluck("number", "name");
         $daneKrajow = collect(array($nazwaRankingu => $daneKrajow)  );
+
+
+
     	return response()->json( $daneKrajow );
 
+    }
+
+
+    public function wyswietlRankingHTML(Request $request)
+    {
+            // $id = Inpu::get('id') ; 
+
+
+            $idRankingu =  $request->input('rankingi');
+            return $this->wyswietlRanking($idRankingu); 
     }
 
     /**
