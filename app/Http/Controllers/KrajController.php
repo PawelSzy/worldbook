@@ -113,18 +113,6 @@ class KrajController extends CzytajDane
 
 
 
-    /**
-    *Funkcja zwraca dane/informacje pobrane z bazy danychna temat danego kraju
-    * @param - int countryid
-    * @return - JSON zawierajacy dane z bazy
-    */
-    private function daneKrajuJSON($countryid) {
-        if( $countryid == NULL ){
-            return NULL;
-        }
-    	$daneKraju = \App\factbook_values::where('countryid', $countryid)->get();
-    	return $daneKraju;
-    }
 
 
 }

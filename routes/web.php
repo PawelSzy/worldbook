@@ -31,3 +31,6 @@ Route::post('ranking',[
 	'as'  => 'ranking',
 	'uses' => "RankingiController@wyswietlRankingHTML"
 	]);
+
+
+Route::get('porownaj/{nazwa_kraju1}/{nazwa_kraju2}/{json?}','PorownajAtrybutyController@wyswietlPorownanieKrajow' );
