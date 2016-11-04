@@ -11,9 +11,16 @@ class PorownajKrajeTest extends TestCase
      *
      * @return void
      */
-    public function testWyswietlPorownanie()
+    public function testWyswietlPorownanieHTML()
     {
           $this->visit('/porownaj/germany/china')
              ->see("gdp")->see("Germany")->see("China");
     }
+
+    public function testWyswietlPorownanieJSON()
+    {
+          $this->visit('/porownaj/germany/china/json_true')
+             ->see("gdp")->see("Germany")->see("China");
+    }
+
 }
